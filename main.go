@@ -8,11 +8,8 @@ import (
 
 func main() {
 
-	// buat variable object untuk gin
 	router := gin.Default()
 
-	// buat root URL, parameter kedua adalah function
-	// balikannya adalah data JSON yang sudah kita buat dibawah
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"name": "Bayu Bagus Bagaswara",
@@ -20,7 +17,14 @@ func main() {
 		})
 	})
 
-	// lalu kita Run routernya
-	router.Run()
+	router.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"title":    "Hello World",
+			"subtitle": "Belajar Golang",
+		})
+	})
+
+	// kita bisa mengubah port untuk localhost
+	router.Run(":8081")
 
 }
