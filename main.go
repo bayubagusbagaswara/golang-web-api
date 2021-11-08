@@ -13,12 +13,15 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/", rootHandler)
-	router.GET("/hello", helloHandler)
-	router.GET("/books/:id", booksHandler)
-	router.GET("/query", queryHandler)
+	// buat variable untuk versioning
+	v1 := router.Group("/v1")
 
-	router.POST("/books", postBooksHandler)
+	v1.GET("/", rootHandler)
+	v1.GET("/hello", helloHandler)
+	v1.GET("/books/:id", booksHandler)
+	v1.GET("/query", queryHandler)
+
+	v1.POST("/books", postBooksHandler)
 
 	router.Run(":8081")
 }
@@ -68,12 +71,11 @@ func postBooksHandler(c *gin.Context) {
 	err := c.ShouldBindJSON(&bookInput)
 	if err != nil {
 
-		// kita buat variable untuk menampung jenis errornya didalam sebuah array of string
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
 
 			errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
-			// masukkan(append) tiap error dari perulangan ke errorMessages
+
 			errorMessages = append(errorMessages, errorMessage)
 		}
 		c.JSON(http.StatusBadRequest, gin.H{
