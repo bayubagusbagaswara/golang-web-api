@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -55,27 +55,27 @@ func queryHandler(c *gin.Context) {
 	})
 }
 
-// kita buat sebuah struct untuk menangkap data JSON yang akan dikirimkan dari client
 type BookInput struct {
-	Title    string
-	Price    int
-	SubTitle string `json:"sub_title"`
+	// tambahkan validation required artinya wajib diisi
+	Title string `json:"title" binding:"required"`
+	Price int    `json:"price" binding:"required, number"`
 }
 
 func postBooksHandler(c *gin.Context) {
-	// kita akan mengirim data title dan price dari sebuah book
 	var bookInput BookInput
 
 	err := c.ShouldBindJSON(&bookInput)
 	if err != nil {
-		log.Fatal(err)
+		// jika ada error, maka kita kasis status http bad request
+		// error diakibatkan dari gagal validasi
+		c.JSON(http.StatusBadRequest, err)
+		fmt.Println(err)
+		return
 	}
 
-	// kalau tidak ada error, kita balikan status OK dan data hasil POSTnya
 	c.JSON(http.StatusOK, gin.H{
-		"title":     bookInput.Title,
-		"price":     bookInput.Price,
-		"sub_title": bookInput.SubTitle,
+		"title": bookInput.Title,
+		"price": bookInput.Price,
 	})
 
 }
