@@ -9,7 +9,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// Ubah nama function menjadi Huruf Kapital untuk menandakan bahwa dia Public, sehingga bisa diakses oleh package lagi
 func RootHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"name": "Bayu Bagus Bagaswara",
