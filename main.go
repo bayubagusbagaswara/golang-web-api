@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"pustaka-api/book"
 	"pustaka-api/handler"
 
 	"github.com/gin-gonic/gin"
@@ -15,13 +16,17 @@ func main() {
 
 	dsn := "host=localhost user=pustakaapi password=pustakaapi dbname=pustakaapi port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 
-	_, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Db connection error")
 	}
 
 	fmt.Println("Database connection succeed")
+
+	// kita akan lakukan auto migration dari data struct yang kemudian akan ditransfer ke database
+	// book adalah nama filenya, dan Book adalah nama struct di entity.go
+	db.AutoMigrate(book.Book{})
 
 	router := gin.Default()
 
