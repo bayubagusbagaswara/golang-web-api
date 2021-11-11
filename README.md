@@ -11,3 +11,10 @@
 ## Unduh module Gin
 
 `go get -u github.com/gin-gonic/gin`
+
+## Buat Database
+
+- Database : POSTGRESQL
+- Database Name : pustakaapi
+- Database Username : pustakaapi
+- Database Password : pustakaapi
