@@ -22,21 +22,34 @@ func main() {
 
 	db.AutoMigrate(book.Book{})
 
-	// kita akan melakukan operasi CRUD untuk memanipulasi data
-	// kita bikin object dari struct book
-	book := book.Book{}
-	// isi property pada struct book
-	book.Title = "Man Tiger"
-	book.Price = 9000
-	book.Discount = 10
-	book.Rating = 5
-	book.Description = "Ini adalah yang sangat bagus dari Eka Kurniawan"
+	// book := book.Book{}
+	// book.Title = "Man Tiger"
+	// book.Price = 9000
+	// book.Discount = 10
+	// book.Rating = 5
+	// book.Description = "Ini adalah yang sangat bagus dari Eka Kurniawan"
 
-	// lalu kita simpan data struct diatas, dan balikannya adalah error, yang nantinya dicek apakah ada error atau tidak
-	err = db.Create(&book).Error
+	// CREATE
+	// err = db.Create(&book).Error
+	// if err != nil {
+	// 	fmt.Println("Error creating book record")
+	// }
+
+	// GET
+	// buat variable book dulu untuk menampung data book yang diambil dari database
+	var book book.Book
+
+	// lalu kita isi variable book atau memparsing data dari yang diambil dari db
+	// First artinya yang diambil adalah data book yang ada pada urutan pertama
+	// dan parameternya kita ikutnya berupa Primary Key di book nya
+	// Debug artinya akan ditampilkan dalam terminal
+	err = db.Debug().First(&book, 1).Error
 	if err != nil {
-		fmt.Println("Error creating book record")
+		fmt.Println("Error finding book record")
 	}
+	// jika tidak ada errornya, maka kita tampilkan data book nya
+	fmt.Println("Title :", book.Title)
+	fmt.Printf("book object %v", book)
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
