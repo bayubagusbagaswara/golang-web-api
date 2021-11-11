@@ -22,8 +22,6 @@ func main() {
 
 	db.AutoMigrate(book.Book{})
 
-	// UPDATE
-	// misal kita ambil dulu data yang tersimpan di database
 	var book book.Book
 
 	err = db.Debug().First(&book, 1).Error
@@ -31,13 +29,11 @@ func main() {
 		fmt.Println("Error finding book record")
 	}
 
-	// misal kita ingin update data Title nya
-	book.Title = "Man Tiger (Revised edition)"
-	// lalu simpan data book yang baru
-	err = db.Save(&book).Error
-	// lalu kita cek error juga
+	// DELETE
+	// kita cari dulu apakah data book nya ada di database
+	err = db.Delete(&book).Error
 	if err != nil {
-		fmt.Println("Error updating book record")
+		fmt.Println("Error deleting book record")
 	}
 
 	router := gin.Default()
