@@ -22,34 +22,23 @@ func main() {
 
 	db.AutoMigrate(book.Book{})
 
-	// book := book.Book{}
-	// book.Title = "Man Tiger"
-	// book.Price = 9000
-	// book.Discount = 10
-	// book.Rating = 5
-	// book.Description = "Ini adalah yang sangat bagus dari Eka Kurniawan"
-
-	// CREATE
-	// err = db.Create(&book).Error
-	// if err != nil {
-	// 	fmt.Println("Error creating book record")
-	// }
-
-	// GET
-	// buat variable book dulu untuk menampung data book yang diambil dari database
+	// UPDATE
+	// misal kita ambil dulu data yang tersimpan di database
 	var book book.Book
 
-	// lalu kita isi variable book atau memparsing data dari yang diambil dari db
-	// First artinya yang diambil adalah data book yang ada pada urutan pertama
-	// dan parameternya kita ikutnya berupa Primary Key di book nya
-	// Debug artinya akan ditampilkan dalam terminal
 	err = db.Debug().First(&book, 1).Error
 	if err != nil {
 		fmt.Println("Error finding book record")
 	}
-	// jika tidak ada errornya, maka kita tampilkan data book nya
-	fmt.Println("Title :", book.Title)
-	fmt.Printf("book object %v", book)
+
+	// misal kita ingin update data Title nya
+	book.Title = "Man Tiger (Revised edition)"
+	// lalu simpan data book yang baru
+	err = db.Save(&book).Error
+	// lalu kita cek error juga
+	if err != nil {
+		fmt.Println("Error updating book record")
+	}
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
