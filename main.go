@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"pustaka-api/book"
 	"pustaka-api/handler"
@@ -20,21 +19,36 @@ func main() {
 		log.Fatal("Db connection error")
 	}
 
+	// kita tidak akan langsung berhubungan dengan database
+	// tapi kita akan buat Repository Layer untuk berkomunikasi dengan database
+
 	db.AutoMigrate(book.Book{})
 
-	var book book.Book
+	// kita parsing object db nya
+	bookRepository := book.NewRepository(db)
 
-	err = db.Debug().First(&book, 1).Error
-	if err != nil {
-		fmt.Println("Error finding book record")
-	}
+	// kita panggil function yang ada di repository
+	// books, err := bookRepository.FindAll()
+	// kita buktikan bahwa books ada isi datanya
+	// for _, book := range books {
+	// 	fmt.Println("Title: ", book.Title)
+	// }
 
-	// DELETE
-	// kita cari dulu apakah data book nya ada di database
-	err = db.Delete(&book).Error
-	if err != nil {
-		fmt.Println("Error deleting book record")
+	// function findById
+	// book, err := bookRepository.FindById(1)
+	// fmt.Println("Title :", book.Title)
+
+	// function Create
+	// buat dulu data untuk struct book
+	book := book.Book{
+		Title:       "Laskar Pelangi",
+		Description: "Buku anak petualangan",
+		Price:       95000,
+		Rating:      4,
+		Discount:    0,
 	}
+	// lalu save
+	bookRepository.Create(book)
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
