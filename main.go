@@ -21,8 +21,9 @@ func main() {
 
 	db.AutoMigrate(book.Book{})
 
-	bookRepository := book.NewRepository(db)
-	bookService := book.NewService(bookRepository)
+	// bookRepository := book.NewRepository(db)
+	bookFileRepository := book.NewFileRepository()
+	bookService := book.NewService(bookFileRepository)
 
 	bookHandler := handler.NewBookHandler(bookService)
 
