@@ -30,11 +30,9 @@ func main() {
 	router := gin.Default()
 	v1 := router.Group("/v1")
 
-	v1.GET("/", bookHandler.RootHandler)
-	v1.GET("/hello", bookHandler.HelloHandler)
-	v1.GET("/books/:id", bookHandler.BooksHandler)
-	v1.GET("/query", bookHandler.QueryHandler)
 	v1.POST("/books", bookHandler.PostBooksHandler)
+	// buat routing untuk getBooks
+	v1.GET("/books", bookHandler.GetBooks)
 
 	router.Run()
 }

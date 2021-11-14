@@ -17,37 +17,36 @@ func NewBookHandler(bookService book.Service) *bookHandler {
 	return &bookHandler{bookService}
 }
 
-func (h *bookHandler) RootHandler(c *gin.Context) {
+// kita buat endpoint baru untuk mengambil data book yang jumlahnya lebih dari satu
+func (h *bookHandler) GetBooks(c *gin.Context) {
+	books, err := h.bookService.FindAll()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
+	// kita ubah menjadi BooksResponse
+	var booksResponse []book.BookResponse
+
+	// lakukan looping
+	for _, b := range books {
+		bookResponse := book.BookResponse{
+			ID:          b.ID,
+			Title:       b.Title,
+			Price:       b.Price,
+			Description: b.Description,
+			Rating:      b.Rating,
+			Discount:    b.Discount,
+		}
+		booksResponse = append(booksResponse, bookResponse)
+	}
+
+	// jika ada data book nya, maka kita kembalikan data book nya
 	c.JSON(http.StatusOK, gin.H{
-		"name": "Bayu Bagus Bagaswara",
-		"bio":  "A Software engineer & content creator",
-	})
-}
-
-func (h *bookHandler) HelloHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"title":    "Hello World",
-		"subtitle": "Belajar Golang",
-	})
-}
-
-func (h *bookHandler) BooksHandler(c *gin.Context) {
-	id := c.Param("id")
-	title := c.Param("title")
-
-	c.JSON(http.StatusOK, gin.H{
-		"id":    id,
-		"title": title,
-	})
-}
-
-func (h *bookHandler) QueryHandler(c *gin.Context) {
-	title := c.Query("title")
-	price := c.Query("price")
-
-	c.JSON(http.StatusOK, gin.H{
-		"title": title,
-		"price": price,
+		"data": booksResponse,
 	})
 }
 
@@ -56,12 +55,9 @@ func (h *bookHandler) PostBooksHandler(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&bookRequest)
 	if err != nil {
-
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
-
 			errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
-
 			errorMessages = append(errorMessages, errorMessage)
 		}
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -70,9 +66,7 @@ func (h *bookHandler) PostBooksHandler(c *gin.Context) {
 		return
 	}
 
-	// panggil service function Create
 	book, err := h.bookService.Create(bookRequest)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"errors": err,
