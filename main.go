@@ -37,6 +37,8 @@ func main() {
 	v1.GET("/books/:id", bookHandler.GetBook)
 	// routing untuk updateBook
 	v1.PUT("/books/:id", bookHandler.UpdateBook)
+	// routing untuk deleteBook
+	v1.DELETE("/books/:id", bookHandler.DeleteBook)
 
 	router.Run()
 }
