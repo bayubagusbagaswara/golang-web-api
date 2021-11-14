@@ -80,7 +80,8 @@ func (h *bookHandler) GetBook(c *gin.Context) {
 	})
 }
 
-func (h *bookHandler) PostBooksHandler(c *gin.Context) {
+// buat handler untuk Create Book
+func (h *bookHandler) CreateBook(c *gin.Context) {
 	var bookRequest book.BookRequest
 
 	err := c.ShouldBindJSON(&bookRequest)

@@ -30,7 +30,8 @@ func main() {
 	router := gin.Default()
 	v1 := router.Group("/v1")
 
-	v1.POST("/books", bookHandler.PostBooksHandler)
+	// routing untuk createBook
+	v1.POST("/books", bookHandler.CreateBook)
 	// buat routing untuk getBooks
 	v1.GET("/books", bookHandler.GetBooks)
 	// buat routing untuk getBook berdasarkan Id
