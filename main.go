@@ -21,9 +21,8 @@ func main() {
 
 	db.AutoMigrate(book.Book{})
 
-	// bookRepository := book.NewRepository(db)
-	bookFileRepository := book.NewFileRepository()
-	bookService := book.NewService(bookFileRepository)
+	bookRepository := book.NewRepository(db)
+	bookService := book.NewService(bookRepository)
 
 	bookHandler := handler.NewBookHandler(bookService)
 
@@ -36,6 +35,8 @@ func main() {
 	v1.GET("/books", bookHandler.GetBooks)
 	// buat routing untuk getBook berdasarkan Id
 	v1.GET("/books/:id", bookHandler.GetBook)
+	// routing untuk updateBook
+	v1.PUT("/books/:id", bookHandler.UpdateBook)
 
 	router.Run()
 }

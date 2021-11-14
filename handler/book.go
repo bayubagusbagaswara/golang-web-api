@@ -97,7 +97,7 @@ func (h *bookHandler) CreateBook(c *gin.Context) {
 		return
 	}
 
-	book, err := h.bookService.Create(bookRequest)
+	b, err := h.bookService.Create(bookRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"errors": err,
@@ -105,8 +105,62 @@ func (h *bookHandler) CreateBook(c *gin.Context) {
 		return
 	}
 
+	// konversi dulu menjadi BookResponse
+	bookResponse := book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Price:       b.Price,
+		Description: b.Description,
+		Rating:      b.Rating,
+		Discount:    b.Discount,
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": book,
+		"data": bookResponse,
+	})
+
+}
+
+func (h *bookHandler) UpdateBook(c *gin.Context) {
+	var bookRequest book.BookRequest
+
+	err := c.ShouldBindJSON(&bookRequest)
+	if err != nil {
+		errorMessages := []string{}
+		for _, e := range err.(validator.ValidationErrors) {
+			errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
+			errorMessages = append(errorMessages, errorMessage)
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": errorMessages,
+		})
+		return
+	}
+
+	// dapatkan id nya dahulu
+	idString := c.Param("id")
+	id, _ := strconv.Atoi(idString)
+	b, err := h.bookService.Update(id, bookRequest)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
+	// konversi dulu menjadi BookResponse
+	bookResponse := book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Price:       b.Price,
+		Description: b.Description,
+		Rating:      b.Rating,
+		Discount:    b.Discount,
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": bookResponse,
 	})
 
 }
