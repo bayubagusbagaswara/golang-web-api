@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"pustaka-api/book"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -47,6 +48,35 @@ func (h *bookHandler) GetBooks(c *gin.Context) {
 	// jika ada data book nya, maka kita kembalikan data book nya
 	c.JSON(http.StatusOK, gin.H{
 		"data": booksResponse,
+	})
+}
+
+// buat handler untuk GetBook (mengambil single data book berdasarkan ID)
+func (h *bookHandler) GetBook(c *gin.Context) {
+	idString := c.Param("id")
+	id, _ := strconv.Atoi(idString)
+
+	b, err := h.bookService.FindByID(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
+	// konversi dulu menjadi BookResponse
+	bookResponse := book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Price:       b.Price,
+		Description: b.Description,
+		Rating:      b.Rating,
+		Discount:    b.Discount,
+	}
+
+	// jika data book dengan id yang dicari ada di database, maka balikkan data booknya berupa bookResponse
+	c.JSON(http.StatusOK, gin.H{
+		"data": bookResponse,
 	})
 }
 

@@ -33,6 +33,8 @@ func main() {
 	v1.POST("/books", bookHandler.PostBooksHandler)
 	// buat routing untuk getBooks
 	v1.GET("/books", bookHandler.GetBooks)
+	// buat routing untuk getBook berdasarkan Id
+	v1.GET("/books/:id", bookHandler.GetBook)
 
 	router.Run()
 }
